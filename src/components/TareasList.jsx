@@ -76,11 +76,12 @@ const TareasList = () => {
   const handleEditTask = (id) => {
     setEditingTaskId(id);
     const taskToEdit = tasks.find(task => task._id === id);
-    setEditedTaskFields(taskToEdit);
+    setEditedTaskFields(taskToEdit); // Inicializa los campos editados con los valores actuales de la tarea
   };
 
   const handleSaveEditedTask = async () => {
     try {
+      console.log("Datos a enviar al backend:", editedTaskFields); // Agregar este registro de consola
       await axios.put(`/update-tareas/${editingTaskId}`, { ...editedTask, _id: editingTaskId });
       // Actualizar la lista de tareas después de la edición
       const response = await axios.get('/tareas');
@@ -88,7 +89,7 @@ const TareasList = () => {
       // Restablecer el estado de editingTaskId a null para ocultar los inputs
       setEditingTaskId(null);
       // Limpiar los campos de edición
-      setEditedTask({
+      setEditedTaskFields({
         nombre: '',
         descripcion: '',
         estado: false,
@@ -137,7 +138,7 @@ const TareasList = () => {
         [name]: value
       }));
     }
-  };
+  };  
 
   const handleCancelEditTask = () => {
     setEditingTaskId(null);
