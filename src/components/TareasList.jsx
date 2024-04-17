@@ -6,6 +6,12 @@ const TareasList = () => {
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [filtroEstado, setFiltroEstado] = useState('Todos');
   const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editedTaskFields, setEditedTaskFields] = useState({
+    nombre: '',
+    descripcion: '',
+    estado: false,
+    prioridad: ''
+  });
   const [editedTask, setEditedTask] = useState({
     nombre: '',
     descripcion: '',
@@ -70,7 +76,7 @@ const TareasList = () => {
   const handleEditTask = (id) => {
     setEditingTaskId(id);
     const taskToEdit = tasks.find(task => task._id === id);
-    setEditedTask(taskToEdit);
+    setEditedTaskFields(taskToEdit);
   };
 
   const handleSaveEditedTask = async () => {
@@ -120,10 +126,27 @@ const TareasList = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewTask(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    if (editingTaskId !== null) {
+      setEditedTaskFields(prevState => ({
+        ...prevState,
+        [name]: value
+      }));
+    } else {
+      setNewTask(prevState => ({
+        ...prevState,
+        [name]: value
+      }));
+    }
+  };
+
+  const handleCancelEditTask = () => {
+    setEditingTaskId(null);
+    setEditedTaskFields({
+      nombre: '',
+      descripcion: '',
+      estado: false,
+      prioridad: ''
+    });
   };
 
   return (
@@ -145,15 +168,18 @@ const TareasList = () => {
             <div className="px-6 py-4">
               {editingTaskId === task._id ? (
                 <div>
-                  <input type="text" name="nombre" value={editedTask.nombre} onChange={handleChange} className="border border-gray-400 rounded-lg p-2 mb-2 text-black" />
-                  <input type="text" name="descripcion" value={editedTask.descripcion} onChange={handleChange} className="border border-gray-400 rounded-lg p-2 mb-2 text-black" />
-                  <select name="estado" value={editedTask.estado} onChange={handleChange} className="border border-gray-400 rounded-lg p-2 mb-2 text-black">
+                  <input type="text" name="nombre" value={editedTaskFields.nombre} onChange={handleChange} className="border border-gray-400 rounded-lg p-2 mb-2 text-black" />
+                  <input type="text" name="descripcion" value={editedTaskFields.descripcion} onChange={handleChange} className="border border-gray-400 rounded-lg p-2 mb-2 text-black" />
+                  <select name="estado" value={editedTaskFields.estado} onChange={handleChange} className="border border-gray-400 rounded-lg p-2 mb-2 text-black">
                     <option value={true}>Completada</option>
                     <option value={false}>Pendiente</option>
                   </select>
-                  <input type="text" name="prioridad" value={editedTask.prioridad} onChange={handleChange} className="border border-gray-400 rounded-lg p-2 mb-2 text-black" />
-                  <p className="text-gray-300 text-base">ID: {task._id}</p>
-                  <button onClick={handleSaveEditedTask} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Guardar</button>
+                  <input type="text" name="prioridad" value={editedTaskFields.prioridad} onChange={handleChange} className="border border-gray-400 rounded-lg p-2 mb-2 text-black" />
+                                    <p className="text-gray-300 text-base">ID: {task._id}</p>
+                  <div className='mt-4 flex justify-between'>
+                    <button onClick={handleSaveEditedTask} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Guardar</button>
+                    <button onClick={handleCancelEditTask} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Cancelar</button>
+                  </div>
                 </div>
               ) : (
                 <div>
