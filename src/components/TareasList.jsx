@@ -81,8 +81,10 @@ const TareasList = () => {
 
   const handleSaveEditedTask = async () => {
     try {
-      console.log("Datos a enviar al backend:", editedTaskFields); // Agregar este registro de consola
-      await axios.put(`/update-tareas/${editingTaskId}`, { ...editedTask, _id: editingTaskId });
+      // Filtrar los campos no válidos antes de enviar la tarea editada al backend
+      const { _id, fechaCreacion, __v, ...editedTaskFieldsWithoutInvalidFields } = editedTaskFields;
+      console.log("Datos a enviar al backend:", editedTaskFieldsWithoutInvalidFields);
+      await axios.put(`/update-tareas/${editingTaskId}`, editedTaskFieldsWithoutInvalidFields);
       // Actualizar la lista de tareas después de la edición
       const response = await axios.get('/tareas');
       setTasks(response.data);
