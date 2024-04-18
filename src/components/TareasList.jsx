@@ -31,29 +31,28 @@ const TareasList = () => {
       try {
         const response = await axios.get('/tareas');
         setTasks(response.data);
+  
+        // Filtrar tareas según el estado seleccionado
+        if (filtroEstado === 'Todos') {
+          setFilteredTasks(response.data); // Muestra todas las tareas
+        } else {
+          const filtered = response.data.filter(task => {
+            if (filtroEstado === 'Completada') {
+              return task.estado; // Filtrar tareas completadas
+            } else {
+              return !task.estado; // Filtrar tareas pendientes
+            }
+          });
+          setFilteredTasks(filtered); // Filtra las tareas según el estado seleccionado
+        }
       } catch (error) {
         console.error('Error fetching tasks:', error);
       }
     };
-
+  
     fetchTasks();
-  }, []);
-
-  useEffect(() => {
-    // Filtrar tareas según el estado seleccionado
-    if (filtroEstado === 'Todos') {
-      setFilteredTasks(tasks); // Muestra todas las tareas
-    } else {
-      const filtered = tasks.filter(task => {
-        if (filtroEstado === 'Completada') {
-          return task.estado; // Filtrar tareas completadas
-        } else {
-          return !task.estado; // Filtrar tareas pendientes
-        }
-      });
-      setFilteredTasks(filtered); // Filtra las tareas según el estado seleccionado
-    }
-  }, [tasks, filtroEstado]);
+  }, [filtroEstado]);
+  
 
   const handleDeleteTask = async (id) => {
     try {
